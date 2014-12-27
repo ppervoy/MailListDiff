@@ -1,4 +1,5 @@
 *.eml
 *.vcf
 *.mbox
-
+*.txt
+*.x

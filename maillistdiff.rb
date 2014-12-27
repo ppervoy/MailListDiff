@@ -3,53 +3,152 @@ require "mail"
 require "vpim/vcard"
 require "mbox"
 
-from_emls = []
-from_vcf = []
-from_mbox = []
+src1 = []
+src2 = []
 
-START = "."
-GROUP = "./Group.vcf"
-#GROUP = "./test.vcf"
-MBOX = "./HH2014.mbox/mbox"
-#MBOX = "./test.mbox/mbox"
+DEBUG = true
 
-Dir.foreach(START) do |x|
-  if x == "." or x == ".."
-    next
-  else
-    if x.end_with? '.eml'
-      m = Mail.read(x)
-      from_emls << m.to[0].downcase
+if DEBUG
+  puts "*** " + ARGV.length.to_s + " args recieved"
+end
+
+def help
+  puts "USAGE:\n\truby maillistdiff.rb <src1> <src2> [<output>]\n"
+  puts "WHERE:\n\t<srcX> if \".\" is given - *.eml files in current folder will be used\n\tas a source\n\tOR"
+  puts "\t<srcX> name of .mbox export from Apple Mail\n\tOR"
+  puts "\t<srcX> name of .vcf export from Apple Contacts\n"
+  puts "RESULT:\n\tOptional <output> file with coma-separated email addresses from\n\t<src1> excluding ones in <src2>\n\n"
+end
+
+def load_eml
+  res = []
+
+  if DEBUG
+    puts "*** Loading from local folder"
+  end
+
+  Dir.foreach(".") do |f|
+    if f == "." or f == ".."
+      next
+    else
+      if f.end_with? '.eml'
+        m = Mail.read(f)
+        res << m.to[0].downcase
+      end
     end
   end
+
+  if DEBUG
+    puts "*** Loaded #{res.length} address"
+  end
+
+  return res
 end
-puts from_emls.count.to_s + ' address'.pluralize(from_emls.count) + " from .eml files loaded"
 
+def load_vcf(path)
+  if File.exist?(path)
+    res = []
 
-cards = Vpim::Vcard.decode(open(GROUP))
-
-cards.each do |card|
-  card.each do |field|
-    if field.name.downcase == "email"
-      from_vcf << field.value.downcase
+    if DEBUG
+      puts "*** Loading from vcf #{path} file"
     end
+
+    cards = Vpim::Vcard.decode(open(path))
+
+    cards.each do |card|
+      card.each do |field|
+        if field.name.downcase == "email"
+          res << field.value.downcase
+        end
+      end
+    end
+
+    if DEBUG
+      puts "*** Loaded #{res.length} address"
+    end
+
+    return res
+  else
+    puts "ERROR\n\t.vcf file \'#{path}\' do not exist. Exiting...\n\n"
+    help
+    exit
   end
 end
-puts from_vcf.count.to_s + ' address'.pluralize(from_vcf.count) + " from #{GROUP} file loaded"
 
+def load_mbox(path)
+  if File.exist?(path)
+    res = []
 
-Mbox.open(MBOX).each {|m|
-  if m.headers[:to][-1] == ">"
-    from_mbox << m.headers[:to].split("<")[1].split(">")[0].downcase
+    if DEBUG
+      puts "*** Loading from mbox #{path} file"
+    end
+
+    Mbox.open(path+"/mbox").each {|m|
+      if m.headers[:to][-1] == ">"
+        res << m.headers[:to].split("<")[1].split(">")[0].downcase
+      else
+        res << m.headers[:to].downcase
+      end
+    }
+
+    if DEBUG
+      puts "*** Loaded #{res.length} address"
+    end
+
+    return res
   else
-    from_mbox << m.headers[:to]
+    puts "ERROR\n\t.mbox file \'#{path}\' do not exist. Exiting...\n\n"
+    help
+    exit
   end
-}
-puts from_mbox.count.to_s + ' address'.pluralize(from_mbox.length) + " from #{MBOX} loaded"
+end
 
+if ARGV.length < 2
+  help
+  exit
+end
 
-d = from_vcf - from_mbox
+if ARGV[0] == "."
+  src1 = load_eml
+else
+  if ARGV[0][-4,4] == ".vcf"
+    src1 = load_vcf(ARGV[0])
+  else
+    src1 = load_mbox(ARGV[0])
+  end
+end
+src1.sort!
 
+#src1.detect { |e| src1.count(e) > 1}
 
-puts d.count.to_s + " unique address".pluralize(d.count) + " found in #{GROUP}:"
-puts d.join(", ")
+if ARGV[1] == "."
+  src2 = load_eml
+else
+  if ARGV[1][-4,4] == ".vcf"
+    src2 = load_vcf(ARGV[1])
+  else
+    src2 = load_mbox(ARGV[1])
+  end
+end
+src2.sort!
+
+d = src1 - src2
+
+if not(ARGV[2])
+  puts d.join(", ").to_s
+else
+  if not(File.exist?(ARGV[2]))
+    File.open(ARGV[2], "w") do |f|
+      d.each {|el| f.puts(el) }
+    end
+
+    if DEBUG
+      puts "*** Saved #{ARGV[2]} #{d.length} addresses."
+    end
+
+  else
+    puts "ERROR\n\tOutput file \'#{ARGV[2]}\' already exists. Exisitng...\n\n"
+    help
+    exit
+  end
+end
