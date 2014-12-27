@@ -8,7 +8,7 @@ To use this tool you should have following ruby gems installed:
 - mbox
 
 to install, please use
-> sudo gem install &lt;gem_name&rt;
+> sudo gem install "gem_name"
 
 ##Input files preparation
 
@@ -22,7 +22,7 @@ Choose Group you'd like to export, right click and choose Export Group vCard... 
 
 ##Usage
 ```
-ruby maillistdiff.rb &lt;src1&rt; &lt;src2&rt; [&lt;output&rt;]
+ruby maillistdiff.rb "src1" "src2" ["output"]
 
 ```
-where &lt;srcX&rt; might be either .vcf (Apple Contacts export) file or .mbox (Apple Mail Mailbox export) file. If "." is given, the script will search current folder for .eml files (Apple Mail single message export) to extract TO: fields.
+where "srcX" might be either .vcf (Apple Contacts export) file or .mbox (Apple Mail Mailbox export) file. If "." is given, the script will search current folder for .eml files (Apple Mail single message export) to extract TO: fields.
