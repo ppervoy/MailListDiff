@@ -20,6 +20,21 @@ def help
   puts "RESULT:\n\tOptional <output> file with coma-separated email addresses from\n\t<src1> excluding ones in <src2>\n\n"
 end
 
+def dedub(arr)
+  dub = []
+
+  while dub[0]=arr.detect { |e| arr.count(e) > 1}
+    arr = arr - dub
+    arr << dub[0]
+
+    if DEBUG
+      puts "*** Removed: " + dub[0]
+    end  
+  end
+
+  return arr
+end
+
 def load_eml
   res = []
 
@@ -117,9 +132,7 @@ else
     src1 = load_mbox(ARGV[0])
   end
 end
-src1.sort!
-
-#src1.detect { |e| src1.count(e) > 1}
+src1 = dedub(src1.sort)
 
 if ARGV[1] == "."
   src2 = load_eml
@@ -130,7 +143,7 @@ else
     src2 = load_mbox(ARGV[1])
   end
 end
-src2.sort!
+src2 = dedub(src2.sort)
 
 d = src1 - src2
 
