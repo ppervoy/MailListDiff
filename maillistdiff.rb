@@ -6,7 +6,7 @@ require "mbox"
 src1 = []
 src2 = []
 
-DEBUG = true
+DEBUG = false
 
 if DEBUG
   puts "*** " + ARGV.length.to_s + " args recieved"
