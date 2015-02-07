@@ -93,16 +93,21 @@ end
 def load_mbox(path)
   if File.exist?(path)
     res = []
+    str = ""
 
     if DEBUG
       puts "*** Loading from mbox #{path} file"
     end
 
     Mbox.open(path+"/mbox").each {|m|
-      if m.headers[:to][-1] == ">"
-        res << m.headers[:to].split("<")[1].split(">")[0].downcase
-      else
-        res << m.headers[:to].downcase
+      str = m.headers[:from]
+
+      if str
+        if str[-1] == ">"
+          res << str.split("<")[1].split(">")[0]
+        else
+          res << str
+        end
       end
     }
 
