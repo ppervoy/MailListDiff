@@ -6,7 +6,7 @@ require "mbox"
 src1 = []
 src2 = []
 
-DEBUG = false
+DEBUG = true
 
 if DEBUG
   puts "*** " + ARGV.length.to_s + " args recieved"
@@ -99,14 +99,50 @@ def load_mbox(path)
       puts "*** Loading from mbox #{path} file"
     end
 
-    Mbox.open(path+"/mbox").each {|m|
-      str = m.headers[:from]
+    user_input = 0
+      until [1,2].include? user_input do
+        puts "Which field to import 1)FROM or 2)TO from #{path}> " 
+            user_input = STDIN.gets.chomp.to_i
+        end
+        if user_input == 1    
+            mboxfield = :from
+        else   
+            mboxfield = :to 
+        end
+
+    Mbox.open(path+"/mbox").each { |m|
+      str = m.headers[mboxfield]
+
+      if DEBUG
+        puts "*** Got line '#{str}'"
+      end
 
       if str
-        if str[-1] == ">"
-          res << str.split("<")[1].split(">")[0]
-        else
-          res << str
+        if str.include? "," #line with several addresses
+          str = str.split(",")
+
+          str.each do |substr|
+            if substr.include? ">"
+              addr = substr.split("<")[1].split(">")[0].downcase.strip
+            else
+              addr = substr.downcase.strip
+            end
+
+            if addr.include? "@"
+              res << addr
+            end
+          end
+
+        else #line with one address
+          if str.include? ">"
+            addr = str.split("<")[1].split(">")[0].downcase.strip
+          else
+            addr = str.downcase.strip
+          end
+
+          if addr.include? "@"
+            res << addr
+          end
         end
       end
     }
@@ -116,6 +152,7 @@ def load_mbox(path)
     end
 
     return res
+
   else
     puts "ERROR\n\t.mbox file \'#{path}\' do not exist. Exiting...\n\n"
     help
@@ -153,6 +190,10 @@ src2 = dedub(src2.sort)
 d = src1 - src2
 
 if not(ARGV[2])
+  if DEBUG
+    puts "*** Difference is #{d.length} addresses."
+  end
+
   puts d.join(", ").to_s
 else
   if not(File.exist?(ARGV[2]))
