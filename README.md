@@ -8,7 +8,11 @@ To use this tool you should have following ruby gems installed:
 - mbox
 
 to install, please use
-> sudo gem install "gem_name"
+
+```
+sudo gem install "gem_name"
+```
+Works with Ruby version 2.1.4 Use rbenv to set local version.
 
 ##Input files preparation
 
