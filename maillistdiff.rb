@@ -6,7 +6,7 @@ require "mbox"
 src1 = []
 src2 = []
 
-DEBUG = true
+DEBUG = false
 
 if DEBUG
   puts "*** " + ARGV.length.to_s + " args recieved"
@@ -16,8 +16,9 @@ def help
   puts "USAGE:\n\truby maillistdiff.rb <src1> <src2> [<output>]\n"
   puts "WHERE:\n\t<srcX> if \".\" is given - *.eml files in current folder will be used\n\tas a source\n\tOR"
   puts "\t<srcX> name of .mbox export from Apple Mail\n\tOR"
-  puts "\t<srcX> name of .vcf export from Apple Contacts\n"
-  puts "RESULT:\n\tOptional <output> file with coma-separated email addresses from\n\t<src1> excluding ones in <src2>\n\n"
+  puts "\t<srcX> name of .vcf export from Apple Contacts\n\tOR"
+  puts "\t<srcX> name of .txt file - result of previously ran subtraction\n"
+  puts "RESULT:\n\tOptional <output> file with new-line-separated email addresses from\n\t<src1> excluding ones in <src2>\n\n"
 end
 
 def dedub(arr)
@@ -33,6 +34,35 @@ def dedub(arr)
   end
 
   return arr
+end
+
+def load_txt(path)
+   if File.exist?(path)
+    res = []
+
+    if DEBUG
+      puts "*** Loading from txt #{path} file"
+    end
+
+    f = File.new(path, "r")
+    while (l = f.gets)
+      if l.chomp.downcase.match(/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
+        res << l.chomp.downcase
+      end
+    end
+    f.close
+
+  else
+    puts "ERROR\n\t.txt file \'#{path}\' do not exist. Exiting...\n\n"
+    help
+    exit
+  end
+
+  if DEBUG
+    puts "*** Loaded #{res.length} address"
+  end
+
+  return res
 end
 
 def load_eml
@@ -165,11 +195,14 @@ if ARGV.length < 2
   exit
 end
 
+
 if ARGV[0] == "."
   src1 = load_eml
 else
   if ARGV[0][-4,4] == ".vcf"
     src1 = load_vcf(ARGV[0])
+  elsif ARGV[0][-4,4] == ".txt"
+    src1 = load_txt(ARGV[0])
   else
     src1 = load_mbox(ARGV[0])
   end
@@ -181,6 +214,8 @@ if ARGV[1] == "."
 else
   if ARGV[1][-4,4] == ".vcf"
     src2 = load_vcf(ARGV[1])
+  elsif ARGV[1][-4,4] == ".txt"
+    src2 = load_txt(ARGV[1])
   else
     src2 = load_mbox(ARGV[1])
   end
@@ -189,11 +224,11 @@ src2 = dedub(src2.sort)
 
 d = src1 - src2
 
-if not(ARGV[2])
-  if DEBUG
-    puts "*** Difference is #{d.length} addresses."
-  end
+if DEBUG
+  puts "*** Difference is #{d.length} addresses."
+end
 
+if not(ARGV[2])
   puts d.join(", ").to_s
 else
   if not(File.exist?(ARGV[2]))
