@@ -143,6 +143,10 @@ def load_mbox(path)
     Mbox.open(path+"/mbox").each { |m|
       str = m.headers[mboxfield]
 
+      if !str
+        str = m.headers[:bcc]
+      end
+
       if DEBUG
         puts "*** Got line '#{str}'"
       end

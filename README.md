@@ -1,6 +1,6 @@
 MailListDiff
 ============
-You sent a Holiday postcards, but don't remember whom and case-by-case search takes too much time? A simple, but powerfull, CLI utility gives you a list of unused e-mail address in one list from another.
+You sent a Holiday postcards, but don't remember whom. Case-by-case search takes too much time? A simple, but powerfull, CLI utility gives you a list of unused e-mail address in one list from another.
 
 ##Prerequisites
 To use this tool you should have following ruby gems installed:
@@ -29,8 +29,25 @@ Choose Group you'd like to export, right click and choose Export Group vCard... 
 ```
 ruby maillistdiff.rb "src1" "src2" ["output"]
 ```
-where "srcX" might be either .vcf (Apple Contacts export) file or .txt (output of this script) or .mbox (Apple Mail Mailbox export) file. If "." is given, the script will search current folder for .eml files (Apple Mail single message export) to extract *TO:* fields (if .mbox is used, script will prompt for *TO:* or *FROM:* field).
+where "srcX" might be either .vcf (Apple Contacts export) file or .txt (output of this script) or .mbox (Apple Mail Mailbox export) file. If "." is given, the script will search current folder for .eml files (Apple Mail single message export) to extract *TO:* fields (if .mbox is used, script will prompt for *TO:* or *FROM:* field. If blank, will search *BCC:*).
 
 Just copy result from terminal or output file into new message's BCC (recommended for mass mail) and you're sure that all people from your updated mailing list "src2" who haven't been mailed in "src1" will receive your communication.
 
-Hit send! Enjoy!
+##EXAMPLE
+
+You composed a list of greeting cards in your Drafts. Some of them are addressed to a person, others to a group in BCC: field. Previously you sent some messages as well. You don't want to send greetings twice, but can't miss any of your contacts.
+
+- First you create smart mailbox in your Appli Mail with a rule set: Sybject "Happy New Year" and sent within last week. Once it's done, you can check what's inside and refine search rule if needed. Export this smart mailbox to GreetingsSent.mbox file
+- Export your Drafts to Drafts.mbox
+- Export you Contacts group to ToBeGreeted.vcf
+- run following to create two lists of addresses. Please note, I use "." here to exclude addresses in .eml files in my working directory. E.g. if there are none, I will get a list of addresses from source.
+```
+ruby maillistdiff.rb GreetingsSent.mbox . GreetingsSent.txt
+ruby maillistdiff.rb Drafts.mbox . Drafts.txt
+```
+- you should get two txt files with all prepared or already sent. Just use your favorite text edit to combine these two lists and save to Composed.txt
+- run following command to get TODO.txt file with a list of addresses you need.
+```
+ruby maillistdiff.rb ToBeGreeted.vcf Composed.txt TODO.txt
+```
+- Just compy those to new e-mail massage and hit send! Enjoy!
