@@ -50,4 +50,7 @@ ruby maillistdiff.rb Drafts.mbox . Drafts.txt
 ```
 ruby maillistdiff.rb ToBeGreeted.vcf Composed.txt TODO.txt
 ```
-- Just compy those to new e-mail massage and hit send! Enjoy!
+- Just copy addresses from TODO.txt to a previously prepared e-mail massage and hit send! Enjoy!
+
+##### Hint
+You can change value of variable DEBUG from *false* to *true* to get extra info on what's going on.
