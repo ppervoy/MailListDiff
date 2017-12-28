@@ -1,4 +1,4 @@
-require 'active_support/inflector'
+# require 'active_support/inflector'
 require "mail"
 require "vpim/vcard"
 require "mbox"
@@ -146,6 +146,8 @@ def load_mbox(path)
       if !str
         str = m.headers[:bcc]
       end
+
+      str = str.to_s
 
       if DEBUG
         puts "*** Got line '#{str}'"
