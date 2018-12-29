@@ -4,3 +4,4 @@
 *.mbox
 *.txt
 *.x
+.DS_Store
