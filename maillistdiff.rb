@@ -7,6 +7,7 @@ src1 = []
 src2 = []
 
 DEBUG = false
+FILTEROUT = true
 
 if DEBUG
   puts "*** " + ARGV.length.to_s + " args recieved"
@@ -19,6 +20,22 @@ def help
   puts "\t<srcX> name of .vcf export from Apple Contacts\n\tOR"
   puts "\t<srcX> name of .txt file - result of previously ran subtraction\n"
   puts "RESULT:\n\tOptional <output> file with new-line-separated email addresses from\n\t<src1> excluding ones in <src2>\n\n"
+end
+
+def filter(input, argument)
+	res = []
+
+	res = input.reject {|i| i.include?(argument)}
+
+	return res
+end
+
+def showfilter(input, argument)
+	res = []
+
+	puts input.select {|i| i.include?(argument)}
+
+	return res
 end
 
 def dedub(arr)
@@ -229,6 +246,37 @@ end
 src2 = dedub(src2.sort)
 
 d = src1 - src2
+
+if FILTEROUT
+	criteria = ["@gmail.com",
+		"@gmail.con",
+		"@oracle.com",
+		"@ukr.net",
+		"@mail.ru",
+		"@ua.fm",
+		"@inbox.ru",
+		"@rambler.ru",
+		"@i.ua",
+		"@yahoo.com",
+		"@rdm.ua",
+		"@bigmir.net",
+		".kz",
+		".md",
+		"@yandex.ru",
+		"@icloud.com",
+		"@googlemail.com",
+		"@list.ru",
+		"@hotmail.com",
+		"@synergia.com.ua",
+		"@synergia.ua",
+		"@outlook.com",
+		"@me.com"]
+
+		criteria.each {
+			|ar| d = filter(d, ar)
+			puts "Array has #{d.count} addresses after #{ar}"
+		}
+end
 
 if DEBUG
   puts "*** Difference is #{d.length} addresses."
