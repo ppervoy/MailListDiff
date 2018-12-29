@@ -7,7 +7,7 @@ src1 = []
 src2 = []
 
 DEBUG = false
-FILTEROUT = true
+FILTEROUT = false
 
 if DEBUG
   puts "*** " + ARGV.length.to_s + " args recieved"
@@ -20,6 +20,7 @@ def help
   puts "\t<srcX> name of .vcf export from Apple Contacts\n\tOR"
   puts "\t<srcX> name of .txt file - result of previously ran subtraction\n"
   puts "RESULT:\n\tOptional <output> file with new-line-separated email addresses from\n\t<src1> excluding ones in <src2>\n\n"
+  puts "Please enable FILTEROUT variable in the source code to filter out addresses\n\n"
 end
 
 def filter(input, argument)
@@ -274,7 +275,7 @@ if FILTEROUT
 
 		criteria.each {
 			|ar| d = filter(d, ar)
-			puts "Array has #{d.count} addresses after #{ar}"
+			puts "Array has #{d.count} addresses after '#{ar}'"
 		}
 end
 
