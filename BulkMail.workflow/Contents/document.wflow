@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMApplicationBuild</key>
+	<string>444.39</string>
+	<key>AMApplicationVersion</key>
+	<string>2.9</string>
+	<key>AMDocumentVersion</key>
+	<string>2</string>
+	<key>actions</key>
+	<array>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>1.0.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>source</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Run AppleScript.action</string>
+				<key>ActionName</key>
+				<string>Run AppleScript</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>source</key>
+					<string>on run {input, parameters}		set EMails to {}	set FNames to {}	set Salutations to {}	set PSs to {}		tell application "Numbers" to tell the front document to tell the active sheet to tell table 1				repeat with i from 2 to the count of cells of column "A"			set EMail to formatted value of cell i of column "A"			set FName to formatted value of cell i of column "B"			set salutation to formatted value of cell i of column "C"			set ps to formatted value of cell i of column "D"						set the end of EMails to EMail			set the end of FNames to FName			set the end of Salutations to salutation			set the end of PSs to ps		end repeat			end tell		--display dialog (count EMails)		set theSubject to "Тестовый заголовок"	set theAttachment to "SSD:Users:ppervoy:Documents:MailListDiff:empty.txt"		set theBody to ",	Это тестовое письмо!"	set theFooter to "__С уважением,Павел ПервойOracle"	repeat with i from 1 to (count EMails)		tell application "Mail"			activate			tell (make new outgoing message)				set visible to true				make new recipient at end of to recipients with properties {address:item i of EMails as string}				set subject to theSubject				set theSalutation to item i of Salutations as string				set theName to item i of FNames as string				set theContent to theSalutation &amp; " " &amp; theName &amp; theBody				if item i of PSs is missing value then					set theContent to theContent &amp; theFooter				else					set theContent to (theContent &amp; "PS: " &amp; item i of PSs as string) &amp; theFooter				end if				set content to theContent				tell application "System Events" to tell process "Mail"					keystroke "t" using {command down, shift down}				end tell				tell content to make new attachment with properties {file name:theAttachment as alias} at after last paragraph								save				--send			end tell -- make new		end tell -- "Mail"	end repeat		return count EMailsend run</string>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.Automator.RunScript</string>
+				<key>CFBundleVersion</key>
+				<string>1.0.2</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryUtilities</string>
+				</array>
+				<key>Class Name</key>
+				<string>RunScriptAction</string>
+				<key>InputUUID</key>
+				<string>3D569666-6F14-4451-887E-15B241D42AD8</string>
+				<key>Keywords</key>
+				<array>
+					<string>Run</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>0956A9C1-59F6-492C-8E06-D1FED654D309</string>
+				<key>UUID</key>
+				<string>69A7F047-1B76-4536-9D44-2FECA5D05A1E</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<string>on run {input, parameters}
+	
+	(* Your script goes here *)
+	
+	return input
+end run</string>
+						<key>name</key>
+						<string>source</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
+				<key>isViewVisible</key>
+				<true/>
+				<key>location</key>
+				<string>468.500000:516.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Run AppleScript.action/Contents/Resources/Base.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<true/>
+		</dict>
+	</array>
+	<key>connectors</key>
+	<dict/>
+	<key>workflowMetaData</key>
+	<dict>
+		<key>applicationBundleID</key>
+		<string>com.apple.iWork.Numbers</string>
+		<key>applicationBundleIDsByPath</key>
+		<dict>
+			<key>/Applications/Numbers.app</key>
+			<string>com.apple.iWork.Numbers</string>
+		</dict>
+		<key>applicationPath</key>
+		<string>/Applications/Numbers.app</string>
+		<key>applicationPaths</key>
+		<array>
+			<string>/Applications/Numbers.app</string>
+		</array>
+		<key>inputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>outputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>presentationMode</key>
+		<integer>11</integer>
+		<key>processesInput</key>
+		<integer>0</integer>
+		<key>serviceApplicationBundleID</key>
+		<string>com.apple.iWork.Numbers</string>
+		<key>serviceApplicationPath</key>
+		<string>/Applications/Numbers.app</string>
+		<key>serviceInputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>serviceOutputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>serviceProcessesInput</key>
+		<integer>0</integer>
+		<key>systemImageName</key>
+		<string>NSTouchBarSend</string>
+		<key>useAutomaticInputType</key>
+		<integer>0</integer>
+		<key>workflowTypeIdentifier</key>
+		<string>com.apple.Automator.servicesMenu</string>
+	</dict>
+</dict>
+</plist>

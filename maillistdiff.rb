@@ -262,6 +262,7 @@ if FILTEROUT
 		"@rdm.ua",
 		"@bigmir.net",
 		".kz",
+		".ru",
 		".md",
 		"@yandex.ru",
 		"@icloud.com",
@@ -284,7 +285,7 @@ if DEBUG
 end
 
 if not(ARGV[2])
-  puts d.join(", ").to_s
+  puts d.join("\n").to_s
 else
   if not(File.exist?(ARGV[2]))
     File.open(ARGV[2], "w") do |f|
