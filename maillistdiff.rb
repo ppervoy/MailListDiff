@@ -7,7 +7,7 @@ src1 = []
 src2 = []
 
 DEBUG = false
-FILTEROUT = false
+FILTEROUT = true
 
 if DEBUG
   puts "*** " + ARGV.length.to_s + " args recieved"
@@ -246,7 +246,9 @@ else
 end
 src2 = dedub(src2.sort)
 
-d = src1 - src2
+d = src1 - src2 # main function of the script
+#d = src1 + src2
+#d = dedub(d.sort)
 
 if FILTEROUT
 	criteria = ["@gmail.com",
@@ -276,8 +278,10 @@ if FILTEROUT
 
 		criteria.each {
 			|ar| d = filter(d, ar)
-			puts "Array has #{d.count} addresses after '#{ar}'"
-		}
+			if DEBUG
+        puts "Array has #{d.count} addresses after '#{ar}'"
+      end
+    }
 end
 
 if DEBUG
