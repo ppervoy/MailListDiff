@@ -4,6 +4,7 @@ You sent a Holiday postcards, but don't remember whom. No time to check case-by-
 
 ##Prerequisites
 To use this tool you should have following ruby gems installed:
+- mail
 - vpim
 - mbox
 
