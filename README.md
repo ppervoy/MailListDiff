@@ -1,6 +1,6 @@
 MailListDiff
 ============
-You sent a Holiday postcards, but don't remember whom. Case-by-case search takes too much time? A simple, but powerfull, CLI utility gives you a list of unused e-mail address in one list from another.
+You sent a Holiday postcards, but don't remember whom. No time to check case-by-case? A simple ruby CLI utility gives you a list of unused e-mail address in one list versus another.
 
 ##Prerequisites
 To use this tool you should have following ruby gems installed:
@@ -13,17 +13,16 @@ to install, please use
 sudo gem install "gem_name"
 ```
 Works with Ruby version 2.1.4
-Use rbenv to set local version.
 
 ##Input files preparation
 
 #####Apple Mail
-Choose Mailbox you'd like to export, click Mailbox -> Export Mailbox... menu and save to convinient location.
+Choose Mailbox you'd like to export (it's easy to use Smart Mailbox), click Mailbox -> Export Mailbox... menu and save to convinient location.
 
 For individual .eml files, just drag them to desired location.
 
 #####Apple Contacts
-Choose Group you'd like to export, right click and choose Export Group vCard... menu and save to convinient location.
+Choose (Smart) Group you'd like to export, right click and choose Export Group vCard... menu and save to convinient location.
 
 ##Usage
 ```
